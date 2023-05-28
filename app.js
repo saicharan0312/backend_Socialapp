@@ -7,7 +7,7 @@ const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
 
 // working with saicharan0312@gmail.com and cluster0 collestions and places
-const url = "mongodb+srv://saicharan0312:Yashodha0312@cluster0.wdscast.mongodb.net/places?retryWrites=true&w=majority"
+const url = "mongodb+srv://saicharan0312:<Password>@cluster0.wdscast.mongodb.net/places?retryWrites=true&w=majority"
 const app = express();
 
 app.use(bodyParser.json());
