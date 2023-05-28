@@ -131,24 +131,51 @@ const updatePlace = async (req, res, next) => {
     res.status(200).json({place : place.toObject({ getters : true }) });
 };
 
+// const deletePlace = async (req, res, next) => {
+//     const placeId = req.params.pid;
+//     let place;
+//     try {
+//         place = await Place.findById(placeId);
+//     } catch (err) {
+//         const error = new HttpError("something went wrong could not delete the place 1st", 500);
+//         return next(error);
+//     }
+//     console.log(place);
+//     try {
+//         await place.remove();
+//     } catch(err) {
+//         const error = new HttpError("something went wrong could not delete the place 2nd", 500);
+//         return next(error);
+//     }
+//     res.status(200).json({message : 'Deleted place.'});
+// };
+
 const deletePlace = async (req, res, next) => {
     const placeId = req.params.pid;
+  
     let place;
     try {
-        place = await Place.findById(placeId);
-    } catch(err) {
-        const error = new HttpError("something went wrong could not delete the place 1st", 500);
-        return next(error);
+      place = await Place.findById(placeId);
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not delete place.',
+        500
+      );
+      return next(error);
     }
-    console.log(place);
+  
     try {
-        await place.remove();
-    } catch(err) {
-        const error = new HttpError("something went wrong could not delete the place 2nd", 500);
-        return next(error);
+        await Place.deleteOne({ _id: placeId });
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not delete place.',
+        500
+      );
+      return next(error);
     }
-    res.status(200).json({message : 'Deleted place.'});
-};
+  
+    res.status(200).json({ message: 'Deleted place.' });
+  };
 
 let DUMMY = [
     {
