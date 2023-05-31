@@ -61,7 +61,6 @@ const getPlacesByUserId = async (req, res, next) => {
         const error = new HttpError("something went wrong, Fetching places failed", 500);
         return next(error);
     }
-    console.log(userWithPlaces);
     if(!userWithPlaces || userWithPlaces.places.length === 0) {
         return next(
             new HttpError('could not find the place with the provided user id', 404)
@@ -94,7 +93,7 @@ const createPlace = async (req, res, next) => {
         const error = new HttpError('creating place failed, please try again later', 500);
         return next(error);
     }
-
+    
     if(!user) {
         const error = new HttpError('we could not find the user for the provide ID', 404);
         return next(error)

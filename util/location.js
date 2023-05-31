@@ -1,8 +1,8 @@
 function getCoordinates(address) {
     return {
-        lat : 763.243,
-        lng : -137.12
+        lat : 41.40338,
+        lng : 2.17403
     };
 }
-
+// 41.40338, 2.17403
 module.exports = getCoordinates;

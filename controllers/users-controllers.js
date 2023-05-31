@@ -73,7 +73,7 @@ const login = async (req, res, next) => {
         const error = new HttpError("invalid credentials, could not log you in.", 401);
         return next(error);
     };
-    res.status(200).json({message : "hello logged in"});
+    res.status(200).json({message : "hello logged in", user : existingUser });
 };
 
 const DUMMY = [
