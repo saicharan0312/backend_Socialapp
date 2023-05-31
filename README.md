@@ -1,2 +1,2 @@
 # backend_Socialapp
-MRAN Stack application
+MERN Stack application
