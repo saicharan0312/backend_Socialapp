@@ -47,7 +47,7 @@ const signUp = async (req, res, next) => {
     const createdUser = new User({
         name, 
         email,
-        image : "https://media.licdn.com/dms/image/D4E35AQEfbyVJiTd5Hg/profile-framedphoto-shrink_400_400/0/1658426863656?e=1685905200&v=beta&t=BBL-5TURKCbkw4-xVsPIz7MUIg5iJPcQHxTAyYHGLxM",
+        image : req.file.path,
         password,
         places : []
     });

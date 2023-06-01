@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 const HttpError = require('./models/http-error');
 const placesRoutes = require('./routes/places-routes');
@@ -11,6 +13,8 @@ const url = "mongodb+srv://saicharan0312:Yashodha0312@cluster0.wdscast.mongodb.n
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use('/uploades/images', express.static(path.join('uploades', 'images')) )
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,6 +32,13 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+
+    if(req.file) {
+        fs.unlink(req.file.path, (err)=>{
+            console.log(err);
+        });
+    }
+
     if(res.headerSent) {
         return next(error);
     }

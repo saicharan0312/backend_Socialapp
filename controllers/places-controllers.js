@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { validationResult } = require('express-validator');
 const { v4 } = require('uuid');
+const fs = require('fs');
 
 const HttpError = require('../models/http-error');
 const getCoordinates = require('../util/location');
@@ -83,10 +84,11 @@ const createPlace = async (req, res, next) => {
         description,
         address,
         location : newCoordinates,
-        image : "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png",
+        image : req.file.path,
         creator
     });
     let user;
+    console.log("ccr ",createPlace);
     try {
         user = await User.findById(creator);
     } catch(err) {
@@ -188,6 +190,8 @@ const deletePlace = async (req, res, next) => {
         const error = new HttpError('Something went wrong, could not find the place for the ID.',500);
     }
 
+    const imagePath = place.image;
+
     try {
         const sesion = await mongoose.startSession();
         sesion.startTransaction();
@@ -202,8 +206,11 @@ const deletePlace = async (req, res, next) => {
       );
       return next(error);
     }
-  
-    res.status(200).json({ message: 'Deleted place.' });
+
+    fs.unlink(imagePath, err => {
+        console.log(err);
+        res.status(200).json({ message: 'Deleted place.' });
+    });
   };
 
 let DUMMY = [
