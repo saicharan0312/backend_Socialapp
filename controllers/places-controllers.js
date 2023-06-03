@@ -62,11 +62,11 @@ const getPlacesByUserId = async (req, res, next) => {
         const error = new HttpError("something went wrong, Fetching places failed", 500);
         return next(error);
     }
-    if(!userWithPlaces || userWithPlaces.places.length === 0) {
-        return next(
-            new HttpError('could not find the place with the provided user id', 404)
-        );
-    }
+    // if(!userWithPlaces || userWithPlaces.places.length === 0) {
+    //     return next(
+    //         new HttpError('could not find the places please share any', 404)
+    //     );
+    // }
     res.json({places : userWithPlaces.places.map(place => place.toObject({ getters : true })) });
     // Mongo is a case sensitive with userId please make sure it is correct while retriving data from DB
 };
@@ -88,7 +88,7 @@ const createPlace = async (req, res, next) => {
         creator
     });
     let user;
-    console.log("ccr ",createPlace);
+
     try {
         user = await User.findById(creator);
     } catch(err) {
@@ -130,6 +130,10 @@ const updatePlace = async (req, res, next) => {
         const error = new HttpError("something went wrong could not upadte the place 1st", 500);
         return next(error);
     }
+    if(place.creator.toString() !== req.userData.userId) {
+        const error = new HttpError("you are not allowed to change other place", 401);
+        return next(error);
+    }
     place.title = title;
     place.description = description;
     try {
@@ -138,41 +142,8 @@ const updatePlace = async (req, res, next) => {
         const error = new HttpError("something went wrong could not upadte the place 2nd", 500);
         return next(error);
     }
-    // const filterBy = {
-    //     id : placeId,
-    // }
-    // const fieldsToBeUpdated = {
-    //     title : title,
-    //     description : description
-    // };
-    // let updatedPlace;
-    // try {
-    //     updatedPlace = await Place.findOneAndUpdate(filterBy, fieldsToBeUpdated, { new : true });
-    // } catch(err) {
-    //     const error = new HttpError("something went wrong could not update it", 500);
-    //     return next(error);
-    // }
     res.status(200).json({place : place.toObject({ getters : true }) });
 };
-
-// const deletePlace = async (req, res, next) => {
-//     const placeId = req.params.pid;
-//     let place;
-//     try {
-//         place = await Place.findById(placeId);
-//     } catch (err) {
-//         const error = new HttpError("something went wrong could not delete the place 1st", 500);
-//         return next(error);
-//     }
-//     console.log(place);
-//     try {
-//         await place.remove();
-//     } catch(err) {
-//         const error = new HttpError("something went wrong could not delete the place 2nd", 500);
-//         return next(error);
-//     }
-//     res.status(200).json({message : 'Deleted place.'});
-// };
 
 const deletePlace = async (req, res, next) => {
     const placeId = req.params.pid;
@@ -189,7 +160,10 @@ const deletePlace = async (req, res, next) => {
     if(!place) {
         const error = new HttpError('Something went wrong, could not find the place for the ID.',500);
     }
-
+    if(place.creator.id !== req.userData.userId) {
+        const error = new HttpError("you are not allowed to delete this place", 401);
+        return next(error);
+    }
     const imagePath = place.image;
 
     try {
